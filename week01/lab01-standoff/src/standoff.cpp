@@ -38,7 +38,7 @@ void StandoffController::handleKeyPress(int16_t key)
         default:
             if(key >= NUM_0 && key <= NUM_9)
             {
-                targetDistance = 10 * (key - NUM_0);
+                //TODO: implement standoff distance
             }
             break;
     }
