@@ -16,7 +16,6 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-
 #include <MaxBotix.h>
 
 void setup()
