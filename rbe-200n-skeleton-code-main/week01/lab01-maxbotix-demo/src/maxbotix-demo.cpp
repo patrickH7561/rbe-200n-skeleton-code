@@ -18,6 +18,7 @@
 #include <SPI.h>
 #include <MaxBotix.h>
 int cntr = 1;
+float myDist = 0.0;
 
 void setup()
 {
@@ -50,7 +51,8 @@ void loop()
     uint32_t pulseLen = mb_ez1.checkEcho();
     Serial.print(pulseLen);
     Serial.print('\t');
-    Serial.print(0); //TODO: change this line to output distance in cm
+    mb_ez1.getDistance(myDist);
+    Serial.print(myDist); //TODO: change this line to output distance in cm
     Serial.print('\t');
 
     //passing true ignores the timer and forces a reading
