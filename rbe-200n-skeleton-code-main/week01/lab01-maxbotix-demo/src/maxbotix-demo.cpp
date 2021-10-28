@@ -16,13 +16,12 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-
 #include <MaxBotix.h>
+int cntr = 1;
 
 void setup()
 {
   delay(1000);
-  
   Serial.begin(115200);
   Serial.println("Velkommen til");
 
@@ -38,8 +37,11 @@ void loop()
    */
   uint16_t asciiResponse = mb_ez1.readASCII();
   
-  if(asciiResponse) 
+  if(asciiResponse && cntr <= 200) 
   {
+    Serial.print("Reading Number:");
+    Serial.print(cntr);
+    Serial.print('\t');
     Serial.print(asciiResponse);
     Serial.print('\t');
     Serial.print(0); //TODO: change this line to output distance in cm
@@ -58,5 +60,6 @@ void loop()
     Serial.print('\t');
     Serial.print(0); //TODO: change this line to output distance in cm
     Serial.print('\n');
+    cntr++;
   }
 }
