@@ -17,16 +17,21 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <MaxBotix.h>
+#include <rangefinder.h>
 int cntr = 1;
 float myDist = 0.0;
+//bool maxbotix = true;
+
+Rangefinder RF;
+
 
 void setup()
 {
   delay(1000);
   Serial.begin(115200);
   Serial.println("Velkommen til");
-
-  mb_ez1.init();
+  //mb_ez1.init();
+  RF.attach(16,17);
 }
 
 void loop() 
@@ -36,32 +41,43 @@ void loop()
    * that is the last thing that the sensor prepares for output.
    * Everything else should be ready at that point.
    */
-  uint16_t asciiResponse = mb_ez1.readASCII();
-  
-  if(asciiResponse && cntr <= 200) 
-  {
+  while(cntr <= 200){
     Serial.print("Reading Number:");
     Serial.print(cntr);
     Serial.print('\t');
-    Serial.print(asciiResponse);
+    RF.myGetDistance(myDist);
+    Serial.print(RF.getRoundTripTimeMicroSeconds()/2);
     Serial.print('\t');
-    Serial.print(0); //TODO: change this line to output distance in cm
-    Serial.print('\t');
-
-    uint32_t pulseLen = mb_ez1.checkEcho();
-    Serial.print(pulseLen);
-    Serial.print('\t');
-    mb_ez1.getDistance(myDist);
     Serial.print(myDist); //TODO: change this line to output distance in cm
-    Serial.print('\t');
-
-    //passing true ignores the timer and forces a reading
-    //from the datasheet, if the serial output is ready, the voltage is ready
-    uint16_t adcReading = mb_ez1.readMCP3002(true);
-    Serial.print(adcReading); 
-    Serial.print('\t');
-    Serial.print(0); //TODO: change this line to output distance in cm
-    Serial.print('\n');
+    Serial.println('\t');
     cntr++;
   }
+
+  // uint16_t asciiResponse = mb_ez1.readASCII();
+  // if(asciiResponse && cntr <= 200 && maxbotix) 
+  // {
+  //   Serial.print("Reading Number:");
+  //   Serial.print(cntr);
+  //   Serial.print('\t');
+  //   Serial.print(asciiResponse);
+  //   Serial.print('\t');
+  //   Serial.print(0); //TODO: change this line to output distance in cm
+  //   Serial.print('\t');
+
+  //   uint32_t pulseLen = mb_ez1.checkEcho();
+  //   Serial.print(pulseLen);
+  //   Serial.print('\t');
+  //   mb_ez1.getDistance(myDist);
+  //   Serial.print(myDist); //TODO: change this line to output distance in cm
+  //   Serial.print('\t');
+
+  //   //passing true ignores the timer and forces a reading
+  //   //from the datasheet, if the serial output is ready, the voltage is ready
+  //   uint16_t adcReading = mb_ez1.readMCP3002(true);
+  //   Serial.print(adcReading); 
+  //   Serial.print('\t');
+  //   Serial.print(0); //TODO: change this line to output distance in cm
+  //   Serial.print('\n');
+  //   cntr++;
+  // }
 }
