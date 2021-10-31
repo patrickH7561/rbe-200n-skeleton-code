@@ -18,12 +18,13 @@
 #include <SPI.h>
 #include <MaxBotix.h>
 #include <rangefinder.h>
+#include <SharpIR.h>
+
 int cntr = 1;
 float myDist = 0.0;
 //bool maxbotix = true;
 
 Rangefinder RF;
-
 
 void setup()
 {
@@ -41,17 +42,22 @@ void loop()
    * that is the last thing that the sensor prepares for output.
    * Everything else should be ready at that point.
    */
-  while(cntr <= 200){
-    Serial.print("Reading Number:");
-    Serial.print(cntr);
-    Serial.print('\t');
-    RF.myGetDistance(myDist);
-    Serial.print(RF.getRoundTripTimeMicroSeconds()/2);
-    Serial.print('\t');
-    Serial.print(myDist); //TODO: change this line to output distance in cm
-    Serial.println('\t');
-    cntr++;
-  }
+
+  
+
+
+
+  // while(cntr <= 200){
+  //   Serial.print("Reading Number:");
+  //   Serial.print(cntr);
+  //   Serial.print('\t');
+  //   RF.myGetDistance(myDist);
+  //   Serial.print(RF.getRoundTripTimeMicroSeconds()/2);
+  //   Serial.print('\t');
+  //   Serial.print(myDist); //TODO: change this line to output distance in cm
+  //   Serial.println('\t');
+  //   cntr++;
+  // }
 
   // uint16_t asciiResponse = mb_ez1.readASCII();
   // if(asciiResponse && cntr <= 200 && maxbotix) 
