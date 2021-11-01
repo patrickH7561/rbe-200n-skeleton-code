@@ -1,5 +1,5 @@
 #include "standoff.h"
-#include "ir_codes.h"
+#include "RemoteConstants.h"
 
 void StandoffController::processDistanceReading(float distance)
 {
@@ -27,16 +27,16 @@ void StandoffController::handleKeyPress(int16_t key)
 {
     switch(key)
     {
-        case CHplus:
+        case remoteUp:
             targetDistance += 10;
             break;
 
-        case CHminus:
+        case remoteDown:
             targetDistance -= 10;
             break;
 
         default:
-            if(key >= NUM_0 && key <= NUM_9)
+            if(key >= remote1 && key <= remote9)
             {
                 //TODO: implement standoff distance
             }

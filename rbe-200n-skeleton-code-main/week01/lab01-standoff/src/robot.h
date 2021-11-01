@@ -1,6 +1,7 @@
 #include <Chassis.h>
 
 #include "standoff.h"
+#include "WallFollowing.h"
 
 //TODO: You'll want to make a wall_follower class to mimic the standoff
 //#include "wall_follower.h" 
@@ -10,8 +11,8 @@
 class Robot
 {
 protected:
-    //WallFollower wallFollower;
     StandoffController standoffController;
+    WallFollowingController wallfollowingcontroller;
 
     enum ROBOT_STATE {ROBOT_IDLE, ROBOT_WALL_FOLLOWING, ROBOT_STANDOFF};
     ROBOT_STATE robotState = ROBOT_IDLE;

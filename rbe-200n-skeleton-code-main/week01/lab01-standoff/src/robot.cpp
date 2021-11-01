@@ -1,10 +1,9 @@
 #include "robot.h"
-
-// NOTE THAT MY IR KEYS AND CODES ARE DIFFERENT FROM YOURS!!! Add/adust as needed
-#include "ir_codes.h"
-
-#include <maxbotix.h>
+#include "RemoteConstants.h"
+#include <rangefinder.h>
 #include <IRdecoder.h>
+
+Rangefinder RF;
 
 Robot::Robot(void)
 {
@@ -14,9 +13,9 @@ Robot::Robot(void)
 void Robot::init(void)
 {
     chassis.init();
-
     irDecoder.init(IR_PIN);
-    mb_ez1.init(USE_ECHO);  // TODO: use the sensor/method of your choice
+    RF.attach(16,17);
+    Serial.println("Just trying to figure it out");
 }
 
 void Robot::loop() 
@@ -27,14 +26,14 @@ void Robot::loop()
 
     //check the distance sensor
     float distanceReading = 0;
-    bool hasNewReading = mb_ez1.getDistance(distanceReading);
+    bool hasNewReading = RF.myGetDistance(distanceReading);
     if(hasNewReading) handleNewDistanceReading(distanceReading);
 }
 
 void Robot::handleIRPress(int16_t key)
 {
     Serial.println(key);
-    if(key == MUTE)
+    if(key == remoteStopMode)
     {
         chassis.stop();
         robotState = ROBOT_IDLE;
@@ -44,19 +43,23 @@ void Robot::handleIRPress(int16_t key)
     switch(robotState)
     {
         case ROBOT_IDLE:
-            if(key == BACK)
+            if(key == remoteLeft)
             {
                 robotState = ROBOT_STANDOFF;
+                Serial.println("Entered Standoff Mode");
             }
-            if(key == PREV)
+            if(key == remoteRight)
             {
                 robotState = ROBOT_WALL_FOLLOWING;
+                Serial.println("Entered Wallfollow Mode");
             }
             break;
         case ROBOT_STANDOFF:
             standoffController.handleKeyPress(key);
             break;
-        //TODO: Add case for wall following
+        case ROBOT_WALL_FOLLOWING:
+            wallfollowingcontroller.handleKeyPress(key);
+            break;
         default:
             break;
     }
@@ -64,11 +67,12 @@ void Robot::handleIRPress(int16_t key)
 
 void Robot::handleNewDistanceReading(float distanceReading)
 {
-    //comment out after you verify this works
-    Serial.print(millis());
-    Serial.print('\t');
-    Serial.print(distanceReading);
-    Serial.print('\t');
+    // //comment out after you verify this works
+    //  Serial.println("Patrick you are being Stupid");
+    //  Serial.print(millis());
+    //  Serial.print('\t');
+    //  Serial.print(distanceReading);
+    //  Serial.print('\t');
     
     //TODO: Add wall following behaviour
 
@@ -76,7 +80,12 @@ void Robot::handleNewDistanceReading(float distanceReading)
     {
         standoffController.processDistanceReading(distanceReading);
         chassis.setMotorEfforts(standoffController.leftEffort, standoffController.rightEffort);
-    }   
+    } 
+     if(robotState == ROBOT_WALL_FOLLOWING)
+    {
+        wallfollowingcontroller.processDistanceReading(distanceReading);
+        chassis.setMotorEfforts(wallfollowingcontroller.leftEffort, wallfollowingcontroller.rightEffort);
+    }  
 
     Serial.print('\n');
 }
