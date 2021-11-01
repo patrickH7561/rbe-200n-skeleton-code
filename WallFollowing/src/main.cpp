@@ -3,37 +3,38 @@
 #include <Chassis.h>
 #include <Rangefinder.h>
 #include <PIDcontroller.h>
+#include <robot.h>
 
-Chassis Robot;
 Rangefinder RF;
 PIDController PID(10);
 float MyDist = 0.0;
 float TargetDist = 10; 
-float BaseDrive = .5;
+float BaseDrive = 10;
 
 void setup() {
   delay(1000);
   Serial.begin(115200);
-  Robot.init();
+  chassis.init();
   RF.attach(16,17); 
+  PID.SetKp(1);
+  PID.SetKi(.05);
+  PID.SetKd(.01);
 }
 void loop() {
   RF.myGetDistance(MyDist);
-  float Effort = CalcEffort(MyDist);
-  Serial.println(Effort);
-
+  float Effort = PID.CalcEffort(MyDist);
   if (Effort > 0)
   {
-    Robot.leftMotor.setEffort(BaseDrive + Effort);
-    Robot.rightMotor.setEffort(Effort);
+    chassis.setMotorEfforts(BaseDrive, Effort + BaseDrive);
   }
   else if (Effort < 0)
   {
-    Robot.rightMotor.setEffort(Effort);
-    Robot.leftMotor.setEffort(BaseDrive + Effort);
+    chassis.setMotorEfforts(Effort + BaseDrive, BaseDrive);
   }
   else 
   {
-    Robot.setMotorEfforts(Effort);
+    chassis.setMotorEfforts(BaseDrive, BaseDrive);
   }
 }
+
+  
